@@ -41,7 +41,8 @@ enum RET
     RET_LIST_IS_EMPTY,
     RET_UNKNOWN_FORMAT,
     RET_DLL_NOT_FOUND,
-    RET_SYMBOL_NOT_FOUND
+    RET_SYMBOL_NOT_FOUND,
+    RET_NOT_CHECK_TARGET
 };
 
 void show_help(void)
@@ -315,7 +316,7 @@ RET load_os_info(const char *os_info_file)
 RET check_import_by_os_info(EPX_IMPORT& imp)
 {
     if (g_dll_check_list.find(imp.dll_file) == g_dll_check_list.end())
-        return RET_SUCCESS;
+        return RET_NOT_CHECK_TARGET;
 
     CharLowerA(&imp.dll_file[0]);
     if (imp.symbol_name.empty())
@@ -334,7 +335,7 @@ RET check_import_by_os_info(EPX_IMPORT& imp)
             std::string& symbol_name = g_dll_and_exports[i].second;
 
             if (symbol_name == "NOT FOUND")
-                return RET_SYMBOL_NOT_FOUND;
+                return RET_DLL_NOT_FOUND;
 
             if (symbol_name == "UNKNOWN FORMAT")
                 return RET_SUCCESS;
@@ -344,8 +345,30 @@ RET check_import_by_os_info(EPX_IMPORT& imp)
         }
     }
 
-    printf("ERROR: '%s' - Symbol '%s' not found.\n",
-           imp.dll_file.c_str(), imp.symbol_name.c_str());
+    return RET_SYMBOL_NOT_FOUND;
+}
+
+RET check_dll_for_import(const char *dll_file, EPX_IMPORT& imp)
+{
+    std::vector<EPX_EXPORT> exports;
+    if (RET ret = get_exports(dll_file, exports))
+        return ret;
+
+    for (size_t k = 0; k < exports.size(); ++k)
+    {
+        EPX_EXPORT& exp = exports[k];
+        if (exp.symbol_name.size())
+        {
+            if (imp.symbol_name.size() && imp.symbol_name == exp.symbol_name)
+                return RET_SUCCESS;
+        }
+        else
+        {
+            if (imp.symbol_name.empty() && imp.symbol_ordinal == exp.symbol_ordinal)
+                return RET_SUCCESS;
+        }
+    }
+
     return RET_SYMBOL_NOT_FOUND;
 }
 
@@ -371,7 +394,24 @@ RET analyze_exe(const char *exe, const char *os_info_file)
 
         if (RET ret2 = check_import_by_os_info(imp))
         {
-            ret = ret2;
+            if (ret2 == RET_DLL_NOT_FOUND || ret2 == RET_NOT_CHECK_TARGET)
+            {
+                char path[MAX_PATH], *pch;
+                strcpy(path, exe);
+                pch = strrchr(path, '\\');
+                if (pch)
+                {
+                    ++pch;
+                    strcpy(pch, imp.dll_file.c_str());
+                    ret2 = check_dll_for_import(path, imp);
+                }
+            }
+            if (ret2 == RET_SYMBOL_NOT_FOUND)
+            {
+                fprintf(stderr, "ERROR: '%s' - Symbol '%s' not found.\n",
+                        imp.dll_file.c_str(), imp.symbol_name.c_str());
+                ret = ret2;
+            }
         }
     }
 
@@ -392,8 +432,6 @@ int main(int argc, char **argv)
         char path[MAX_PATH], *pch;
         GetModuleFileNameA(NULL, path, MAX_PATH);
         pch = strrchr(path, '\\');
-        if (pch == NULL)
-            pch = strrchr(path, '/');
         if (pch)
         {
             strcpy(pch, "/DllCheckList.txt");
