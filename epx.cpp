@@ -42,7 +42,8 @@ enum RET
     RET_UNKNOWN_FORMAT,
     RET_DLL_NOT_FOUND,
     RET_SYMBOL_NOT_FOUND,
-    RET_NOT_CHECK_TARGET
+    RET_NOT_CHECK_TARGET,
+    RET_CHECK_LIST_FILE_NOT_FOUND
 };
 
 void show_help(void)
@@ -439,7 +440,20 @@ int main(int argc, char **argv)
         pch = strrchr(path, '\\');
         if (pch)
         {
-            strcpy(pch, "/DllCheckList.txt");
+            strcpy(pch, "\\DllCheckList.txt");
+            if (GetFileAttributesA(path) == 0xFFFFFFFF)
+            {
+                strcpy(pch, "\\..\\DllCheckList.txt");
+                if (GetFileAttributesA(path) == 0xFFFFFFFF)
+                {
+                    strcpy(pch, "\\..\\..\\DllCheckList.txt");
+                    if (GetFileAttributesA(path) == 0xFFFFFFFF)
+                    {
+                        fprintf(stderr, "ERROR: Not found: DllCheckList.txt\n");
+                        return RET_CHECK_LIST_FILE_NOT_FOUND;
+                    }
+                }
+            }
             strcpy(g_dll_check_list_file, path);
         }
     }
