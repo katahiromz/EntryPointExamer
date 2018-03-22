@@ -234,7 +234,12 @@ RET dump_os_info(const char *os_info_file)
         osver.dwOSVersionInfoSize = sizeof(osver);
         GetVersionExA(&osver);
 
-        fprintf(fp, "; filename: %s\n", os_info_file);
+        fprintf(fp, "; Filename: %s\n", os_info_file);
+        SYSTEMTIME st;
+        GetLocalTime(&st);
+        fprintf(fp, "; Timestamp: %04u.%02u.%02u %02u:%02u:%02u\n",
+            st.wYear, st.wMonth, st.wDay,
+            st.wHour, st.wMinute, st.wSecond);
 #ifdef _WIN64
         fprintf(fp, "; _WIN64\n");
 #else
