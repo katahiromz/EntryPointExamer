@@ -224,7 +224,7 @@ RET dump_os_info(const char *os_info_file)
 {
     if (g_dll_check_list.empty())
     {
-        if (RET ret = get_dll_check_list("DllCheckList.txt"))
+        if (RET ret = get_dll_check_list(g_dll_check_list_file))
             return ret;
     }
 
@@ -382,7 +382,7 @@ RET analyze_exe(const char *exe, const char *os_info_file)
 {
     if (g_dll_check_list.empty())
     {
-        if (RET ret = get_dll_check_list("DllCheckList.txt"))
+        if (RET ret = get_dll_check_list(g_dll_check_list_file))
             return ret;
     }
 

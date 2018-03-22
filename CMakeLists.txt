@@ -27,6 +27,8 @@ endif()
 
 # Win32
 add_executable(epx epx.cpp)
+set_target_properties(epx PROPERTIES LINK_SEARCH_START_STATIC 1)
+set_target_properties(epx PROPERTIES LINK_SEARCH_END_STATIC 1)
 
 # install the program
 install(TARGETS epx DESTINATION bin)
