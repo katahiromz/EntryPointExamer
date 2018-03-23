@@ -3,7 +3,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_PSTDINT_H_
-#define MZC4_PSTDINT_H_     11   /* Version 11 */
+#define MZC4_PSTDINT_H_     12   /* Version 12 */
 
 #if __cplusplus >= 201103L
     #include <cstdint>
@@ -23,8 +23,10 @@
     typedef DWORDLONG   uint64_t;
 #else
     #ifdef __cplusplus
+        #include <cstddef>
         #include <climits>
     #else
+        #include <stddef.h>
         #include <limits.h>
     #endif
     #ifndef INT8_MIN
@@ -53,13 +55,16 @@
         typedef int                     int32_t;
         typedef unsigned int            uint32_t;
         #ifndef INT64_MAX
-            #define INT64_MIN (-9223372036854775807LL - 1)
-            #define INT64_MAX 9223372036854775807LL
-            #define UINT64_MAX 0xFFFFFFFFFFFFFFFFLL
             #ifdef _I64_MAX
+                #define INT64_MIN _I64_MIN
+                #define INT64_MAX
+                #define UINT64_MAX
                 typedef __int64             int64_t;
                 typedef unsigned __int64    uint64_t;
             #else
+                #define INT64_MIN (-9223372036854775807LL - 1)
+                #define INT64_MAX 9223372036854775807LL
+                #define UINT64_MAX 0xFFFFFFFFFFFFFFFFLL
                 typedef long long           int64_t;
                 typedef unsigned long long  uint64_t;
             #endif
