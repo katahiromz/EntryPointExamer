@@ -25,7 +25,7 @@ using namespace codereverse;
 
 void show_version(void)
 {
-    printf("EPX 0.4 by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf("EPX 0.6 by katahiromz (%s %s)\n", __DATE__, __TIME__);
     printf("This software is public domain software (PDS).\n");
 }
 
@@ -60,6 +60,7 @@ struct EPX_EXPORT
 
 #define NOT_FOUND       "NOT FOUND"
 #define UNKNOWN_FORMAT  "UNKNOWN FORMAT"
+#define NO_EXPORTS      "NO EXPORTS"
 
 const char *g_progname = "epx";
 char g_dll_check_list_file[MAX_PATH] = "DllCheckList.txt";
@@ -80,7 +81,7 @@ enum RET
     RET_SYMBOL_NOT_FOUND,
     RET_NOT_CHECK_TARGET,
     RET_CHECK_LIST_FILE_NOT_FOUND,
-    RET_UNKNOWN_DLL
+    RET_NO_EXPORTS
 };
 
 template <typename T_CHAR>
@@ -166,24 +167,24 @@ RET get_exports(const char *dll_file, std::vector<EPX_EXPORT>& exports)
     if (dll)
     {
         std::vector<ExportSymbol> symbols;
-        if (dll.get_export_symbols(symbols))
+        if (!dll.get_export_symbols(symbols))
+            return RET_NO_EXPORTS;
+
+        for (size_t i = 0; i < symbols.size(); ++i)
         {
-            for (size_t i = 0; i < symbols.size(); ++i)
+            ExportSymbol& symbol = symbols[i];
+            EPX_EXPORT exp;
+            if (symbol.pszName)
             {
-                ExportSymbol& symbol = symbols[i];
-                EPX_EXPORT exp;
-                if (symbol.pszName)
-                {
-                    exp.symbol_name = symbol.pszName;
-                }
-                else
-                {
-                    exp.symbol_ordinal = WORD(symbol.dwOrdinal);
-                }
-                exports.push_back(exp);
+                exp.symbol_name = symbol.pszName;
             }
-            return RET_SUCCESS;
+            else
+            {
+                exp.symbol_ordinal = WORD(symbol.dwOrdinal);
+            }
+            exports.push_back(exp);
         }
+        return RET_SUCCESS;
     }
 
     fprintf(stderr, "WARNING: Unknown format: '%s'\n", dll_file);
@@ -239,7 +240,14 @@ RET get_dll_check_list(const char *check_list_file)
 
         std::vector<EPX_EXPORT> exports;
         if (RET ret = get_exports(path, exports))
+        {
+            if (ret == RET_NO_EXPORTS)
+            {
+                fprintf(fp, "%s\t%s\n", dll, NO_EXPORTS);
+                return RET_SUCCESS;
+            }
             return ret;
+        }
 
         for (size_t k = 0; k < exports.size(); ++k)
         {
@@ -378,6 +386,9 @@ RET check_import_by_os_info(EPX_IMPORT& imp)
         {
             std::string& symbol_name = g_dll_and_exports[i].second;
 
+            if (symbol_name == NO_EXPORTS)
+                continue;
+
             if (symbol_name == NOT_FOUND)
                 return RET_DLL_NOT_FOUND;
 
@@ -462,6 +473,12 @@ RET analyze_exe(const char *exe, const char *os_info_file)
                         imp.dll_file.c_str(), imp.symbol_name.c_str());
                 ret = ret2;
             }
+            if (ret2 == RET_NOT_CHECK_TARGET)
+            {
+                fprintf(stderr, "WARNING: '%s' is not check target.\n",
+                        imp.dll_file.c_str());
+                ret = ret2;
+            }
         }
     }
 
@@ -476,6 +493,14 @@ RET analyze_exe(const char *exe, const char *os_info_file)
     if (ret == RET_SUCCESS)
     {
         printf("Success.\n");
+    }
+    else if (ret == RET_NOT_CHECK_TARGET)
+    {
+        printf("Indeterminate.\n");
+    }
+    else
+    {
+        printf("FAILED.\n");
     }
 
     return ret;

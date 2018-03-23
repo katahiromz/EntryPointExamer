@@ -5311,7 +5311,7 @@ inseng.dll	GetICifRWFileFromFile
 inseng.dll	PurgeDownloadDirectory
 intl.cpl	CPlApplet
 intl.cpl	100
-iologmsg.dll	UNKNOWN FORMAT
+iologmsg.dll	NO EXPORTS
 iphlpapi.dll	AddIPAddress
 iphlpapi.dll	AllocateAndGetArpEntTableFromStack
 iphlpapi.dll	AllocateAndGetIfTableFromStack
@@ -12440,7 +12440,7 @@ mfc40.dll	5793
 mfc40.dll	5794
 mfc40.dll	5795
 mfc40.dll	5796
-mfc40loc.dll	UNKNOWN FORMAT
+mfc40loc.dll	NO EXPORTS
 mfc42.dll	?classCCachedDataPathProperty@CCachedDataPathProperty@@2UCRuntimeClass@@B
 mfc42.dll	?classCDataPathProperty@CDataPathProperty@@2UCRuntimeClass@@B
 mfc42.dll	DllCanUnloadNow
@@ -18830,7 +18830,7 @@ mfc42.dll	6929
 mfc42.dll	6930
 mfc42.dll	6931
 mfc42.dll	6932
-mfc42loc.dll	UNKNOWN FORMAT
+mfc42loc.dll	NO EXPORTS
 mfc42u.dll	?classCCachedDataPathProperty@CCachedDataPathProperty@@2UCRuntimeClass@@B
 mfc42u.dll	?classCDataPathProperty@CDataPathProperty@@2UCRuntimeClass@@B
 mfc42u.dll	DllCanUnloadNow
@@ -25954,7 +25954,7 @@ mshtml.dll	com_ms_osp_ospmrshl_classInit
 mshtml.dll	com_ms_osp_ospmrshl_copyToExternal
 mshtml.dll	com_ms_osp_ospmrshl_releaseByValExternal
 mshtml.dll	com_ms_osp_ospmrshl_toJava
-mshtml.tlb	UNKNOWN FORMAT
+mshtml.tlb	NO EXPORTS
 msi.dll	DllCanUnloadNow
 msi.dll	DllGetClassObject
 msi.dll	DllGetVersion
@@ -26181,7 +26181,7 @@ msimg32.dll	DllInitialize
 msimg32.dll	GradientFill
 msimg32.dll	TransparentBlt
 msimg32.dll	vSetDdrawflag
-msimsg.dll	UNKNOWN FORMAT
+msimsg.dll	NO EXPORTS
 msimtf.dll	NOT FOUND
 msisip.dll	NOT FOUND
 msisys.ocx	NOT FOUND
@@ -30359,7 +30359,7 @@ netcfgx.dll	SvchostChangeSvchostGroup
 netcfgx.dll	UpdateLanaConfigUsingAnswerfile
 netcfgx.dll	WlbsInitParams
 netcfgx.dll	WlbsSetNetworkAddress
-netevent.dll	UNKNOWN FORMAT
+netevent.dll	NO EXPORTS
 netid.dll	CreateNetIDPropertyPage
 netprofm.dll	NOT FOUND
 newdev.dll	DevInstallRebootPromptW
@@ -37579,7 +37579,7 @@ sfc.dll	8
 sfc.dll	9
 sfc_os.dll	NOT FOUND
 shcore.dll	NOT FOUND
-shdoclc.dll	UNKNOWN FORMAT
+shdoclc.dll	NO EXPORTS
 shdocvw.dll	AddUrlToFavorites
 shdocvw.dll	DllCanUnloadNow
 shdocvw.dll	DllGetClassObject
@@ -39142,8 +39142,8 @@ spoolss.dll	pszDbgAllocMsgA
 spoolss.dll	vDbgLogError
 srclient.dll	NOT FOUND
 sspicli.dll	NOT FOUND
-stdole2.tlb	UNKNOWN FORMAT
-stdole32.tlb	UNKNOWN FORMAT
+stdole2.tlb	NO EXPORTS
+stdole32.tlb	NO EXPORTS
 sti.dll	DllCanUnloadNow
 sti.dll	DllGetClassObject
 sti.dll	DllRegisterServer

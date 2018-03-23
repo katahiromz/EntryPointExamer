@@ -6879,7 +6879,7 @@ inseng.dll	GetICifFileFromFile
 inseng.dll	GetICifRWFileFromFile
 inseng.dll	PurgeDownloadDirectory
 intl.cpl	CPlApplet
-iologmsg.dll	UNKNOWN FORMAT
+iologmsg.dll	NO EXPORTS
 iphlpapi.dll	AddIPAddress
 iphlpapi.dll	AllocateAndGetArpEntTableFromStack
 iphlpapi.dll	AllocateAndGetIfTableFromStack
@@ -14264,7 +14264,7 @@ mfc40.dll	5793
 mfc40.dll	5794
 mfc40.dll	5795
 mfc40.dll	5796
-mfc40loc.dll	UNKNOWN FORMAT
+mfc40loc.dll	NO EXPORTS
 mfc42.dll	?classCCachedDataPathProperty@CCachedDataPathProperty@@2UCRuntimeClass@@B
 mfc42.dll	?classCDataPathProperty@CDataPathProperty@@2UCRuntimeClass@@B
 mfc42.dll	DllCanUnloadNow
@@ -20659,7 +20659,7 @@ mfc42.dll	6934
 mfc42.dll	6935
 mfc42.dll	6936
 mfc42.dll	6937
-mfc42loc.dll	UNKNOWN FORMAT
+mfc42loc.dll	NO EXPORTS
 mfc42u.dll	?classCCachedDataPathProperty@CCachedDataPathProperty@@2UCRuntimeClass@@B
 mfc42u.dll	?classCDataPathProperty@CDataPathProperty@@2UCRuntimeClass@@B
 mfc42u.dll	DllCanUnloadNow
@@ -27891,7 +27891,7 @@ mshtml.dll	com_ms_osp_ospmrshl_classInit
 mshtml.dll	com_ms_osp_ospmrshl_copyToExternal
 mshtml.dll	com_ms_osp_ospmrshl_releaseByValExternal
 mshtml.dll	com_ms_osp_ospmrshl_toJava
-mshtml.tlb	UNKNOWN FORMAT
+mshtml.tlb	NO EXPORTS
 msi.dll	DllCanUnloadNow
 msi.dll	DllGetClassObject
 msi.dll	DllGetVersion
@@ -28182,7 +28182,7 @@ msimg32.dll	DllInitialize
 msimg32.dll	GradientFill
 msimg32.dll	TransparentBlt
 msimg32.dll	vSetDdrawflag
-msimsg.dll	UNKNOWN FORMAT
+msimsg.dll	NO EXPORTS
 msimtf.dll	DllCanUnloadNow
 msimtf.dll	DllGetClassObject
 msimtf.dll	DllRegisterServer
@@ -34764,7 +34764,7 @@ netcfgx.dll	RasCountBindings
 netcfgx.dll	RasRemoveBindings
 netcfgx.dll	SvchostChangeSvchostGroup
 netcfgx.dll	UpdateLanaConfigUsingAnswerfile
-netevent.dll	UNKNOWN FORMAT
+netevent.dll	NO EXPORTS
 netid.dll	CreateNetIDPropertyPage
 netid.dll	ShowDcNotFoundErrorDialog
 netprofm.dll	NOT FOUND
@@ -42794,7 +42794,7 @@ sfc_os.dll	5
 sfc_os.dll	6
 sfc_os.dll	7
 shcore.dll	NOT FOUND
-shdoclc.dll	UNKNOWN FORMAT
+shdoclc.dll	NO EXPORTS
 shdocvw.dll	AddUrlToFavorites
 shdocvw.dll	DllCanUnloadNow
 shdocvw.dll	DllGetClassObject
@@ -44556,8 +44556,8 @@ srclient.dll	SRUpdateDSSize
 srclient.dll	SRUpdateMonitoredListA
 srclient.dll	SRUpdateMonitoredListW
 sspicli.dll	NOT FOUND
-stdole2.tlb	UNKNOWN FORMAT
-stdole32.tlb	UNKNOWN FORMAT
+stdole2.tlb	NO EXPORTS
+stdole32.tlb	NO EXPORTS
 sti.dll	DllCanUnloadNow
 sti.dll	DllGetClassObject
 sti.dll	DllRegisterServer
@@ -45009,7 +45009,7 @@ tapi32.dll	tapiRequestMakeCallW
 tapi32.dll	tapiRequestMediaCall
 tapi32.dll	tapiRequestMediaCallA
 tapi32.dll	tapiRequestMediaCallW
-tapiui.dll	UNKNOWN FORMAT
+tapiui.dll	NO EXPORTS
 taskschd.dll	NOT FOUND
 tdh.dll	NOT FOUND
 tdi.sys	NOT FOUND

@@ -7228,7 +7228,7 @@ inseng.dll	GetICifFileFromFile
 inseng.dll	GetICifRWFileFromFile
 inseng.dll	PurgeDownloadDirectory
 intl.cpl	CPlApplet
-iologmsg.dll	UNKNOWN FORMAT
+iologmsg.dll	NO EXPORTS
 iphlpapi.dll	AddIPAddress
 iphlpapi.dll	AllocateAndGetArpEntTableFromStack
 iphlpapi.dll	AllocateAndGetIfTableFromStack
@@ -28335,7 +28335,7 @@ mshtml.dll	101
 mshtml.dll	102
 mshtml.dll	103
 mshtml.dll	104
-mshtml.tlb	UNKNOWN FORMAT
+mshtml.tlb	NO EXPORTS
 msi.dll	DllCanUnloadNow
 msi.dll	DllGetClassObject
 msi.dll	DllGetVersion
@@ -28626,7 +28626,7 @@ msimg32.dll	DllInitialize
 msimg32.dll	GradientFill
 msimg32.dll	TransparentBlt
 msimg32.dll	vSetDdrawflag
-msimsg.dll	UNKNOWN FORMAT
+msimsg.dll	NO EXPORTS
 msimtf.dll	DllCanUnloadNow
 msimtf.dll	DllGetClassObject
 msimtf.dll	DllRegisterServer
@@ -35223,7 +35223,7 @@ netcfgx.dll	RasCountBindings
 netcfgx.dll	RasRemoveBindings
 netcfgx.dll	SvchostChangeSvchostGroup
 netcfgx.dll	UpdateLanaConfigUsingAnswerfile
-netevent.dll	UNKNOWN FORMAT
+netevent.dll	NO EXPORTS
 netid.dll	CreateNetIDPropertyPage
 netid.dll	ShowDcNotFoundErrorDialog
 netprofm.dll	NOT FOUND
@@ -41793,7 +41793,7 @@ riched20.dll	IID_ITextServices
 riched20.dll	REExtendedRegisterClass
 riched20.dll	RichEdit10ANSIWndProc
 riched20.dll	RichEditANSIWndProc
-riched32.dll	UNKNOWN FORMAT
+riched32.dll	NO EXPORTS
 rpcrt4.dll	CStdStubBuffer_AddRef
 rpcrt4.dll	CStdStubBuffer_Connect
 rpcrt4.dll	CStdStubBuffer_CountRefs
@@ -43473,7 +43473,7 @@ sfc_os.dll	5
 sfc_os.dll	6
 sfc_os.dll	7
 shcore.dll	NOT FOUND
-shdoclc.dll	UNKNOWN FORMAT
+shdoclc.dll	NO EXPORTS
 shdocvw.dll	AddUrlToFavorites
 shdocvw.dll	DllCanUnloadNow
 shdocvw.dll	DllGetClassObject
@@ -45217,8 +45217,8 @@ spoolss.dll	pszDbgAllocMsgA
 spoolss.dll	vDbgLogError
 srclient.dll	NOT FOUND
 sspicli.dll	NOT FOUND
-stdole2.tlb	UNKNOWN FORMAT
-stdole32.tlb	UNKNOWN FORMAT
+stdole2.tlb	NO EXPORTS
+stdole32.tlb	NO EXPORTS
 sti.dll	??0BUFFER@@QAE@I@Z
 sti.dll	??0BUFFER_CHAIN@@QAE@XZ
 sti.dll	??0BUFFER_CHAIN_ITEM@@QAE@I@Z
@@ -45682,7 +45682,7 @@ tapi32.dll	tapiRequestMakeCallW
 tapi32.dll	tapiRequestMediaCall
 tapi32.dll	tapiRequestMediaCallA
 tapi32.dll	tapiRequestMediaCallW
-tapiui.dll	UNKNOWN FORMAT
+tapiui.dll	NO EXPORTS
 taskschd.dll	NOT FOUND
 tdh.dll	NOT FOUND
 tdi.sys	NOT FOUND
