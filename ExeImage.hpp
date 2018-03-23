@@ -4,7 +4,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXE_IMAGE_HPP
-#define EXE_IMAGE_HPP   20      // Version 20
+#define EXE_IMAGE_HPP   21      // Version 21
 
 #ifndef _CRT_SECURE_NO_WARNINGS
     #define _CRT_SECURE_NO_WARNINGS
@@ -82,6 +82,8 @@ public:
 
     // attributes
     bool is_loaded() const;
+    operator bool() const { return is_loaded(); }
+
     bool is_64bit() const;
     DWORD size_of_file() const;
     DWORD size_of_image() const;

@@ -123,7 +123,7 @@ RET get_imports(const char *exe_file, std::vector<EPX_IMPORT>& imports)
     imports.clear();
 
     ExeImage exe(exe_file);
-    if (exe.is_loaded())
+    if (exe)
     {
         std::vector<const char *> dlls;
         if (exe.get_import_dll_names(dlls))
@@ -163,7 +163,7 @@ RET get_exports(const char *dll_file, std::vector<EPX_EXPORT>& exports)
     exports.clear();
 
     ExeImage dll(dll_file);
-    if (dll.is_loaded())
+    if (dll)
     {
         std::vector<ExportSymbol> symbols;
         if (dll.get_export_symbols(symbols))
