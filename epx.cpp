@@ -14,6 +14,26 @@
 #include "ExeImage.hpp"
 using namespace codereverse;
 
+void show_help(void)
+{
+    printf("EPX --- EntryPointExamer\n");
+    printf("EPX statically analyzes the entry points of EXE/DLL files.\n");
+    printf("Usage: epx.exe [OPTIONS] [exe-file.exe]\n");
+    printf("\n");
+    printf("If no EXE file specified, then OS info file will be dumped.\n");
+    printf("\n");
+    printf("Options:\n");
+    printf("--os-info \"os.info\"  Set the OS info file for analysis or dumping.\n");
+    printf("--version              Show version info.\n");
+    printf("--help                 Show this message.\n");
+}
+
+void show_version(void)
+{
+    printf("EPX 0.2 by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf("This software is public domain software (PDS).\n");
+}
+
 struct EPX_IMPORT
 {
     std::string dll_file;
@@ -26,6 +46,9 @@ struct EPX_EXPORT
     std::string symbol_name;
     WORD symbol_ordinal;
 };
+
+#define NOT_FOUND       "NOT FOUND"
+#define UNKNOWN_FORMAT  "UNKNOWN FORMAT"
 
 char g_dll_check_list_file[MAX_PATH] = "DllCheckList.txt";
 typedef std::set<std::string> dll_check_list_t;
@@ -46,26 +69,6 @@ enum RET
     RET_NOT_CHECK_TARGET,
     RET_CHECK_LIST_FILE_NOT_FOUND
 };
-
-void show_help(void)
-{
-    printf("EPX --- EntryPointExamer\n");
-    printf("EPX statically analyzes the entry points of EXE/DLL files.\n");
-    printf("Usage: epx.exe [OPTIONS] [exe-file.exe]\n");
-    printf("\n");
-    printf("If no EXE file specified, then OS info file will be dumped.\n");
-    printf("\n");
-    printf("Options:\n");
-    printf("--os-info \"os.info\"  Set the OS info file for analysis or dumping.\n");
-    printf("--version              Show version info.\n");
-    printf("--help                 Show this message.\n");
-}
-
-void show_version(void)
-{
-    printf("EPX 0.0 by katahiromz (%s %s)\n", __DATE__, __TIME__);
-    printf("This software is public domain software (PDS).\n");
-}
 
 template <typename T_CHAR>
 inline void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
@@ -262,11 +265,11 @@ RET dump_os_info(const char *os_info_file)
             {
                 if (ret == RET_DLL_NOT_FOUND)
                 {
-                    fprintf(fp, "%s\tNOT FOUND\n", dll.c_str());
+                    fprintf(fp, "%s\t%s\n", dll.c_str(), NOT_FOUND);
                 }
                 if (ret == RET_UNKNOWN_FORMAT)
                 {
-                    fprintf(fp, "%s\tUNKNOWN FORMAT\n", dll.c_str());
+                    fprintf(fp, "%s\t%s\n", dll.c_str(), UNKNOWN_FORMAT);
                 }
             }
         }
@@ -341,11 +344,14 @@ RET check_import_by_os_info(EPX_IMPORT& imp)
         {
             std::string& symbol_name = g_dll_and_exports[i].second;
 
-            if (symbol_name == "NOT FOUND")
+            if (symbol_name == NOT_FOUND)
                 return RET_DLL_NOT_FOUND;
 
-            if (symbol_name == "UNKNOWN FORMAT")
+            if (symbol_name == UNKNOWN_FORMAT)
+            {
+                fprintf(stderr, "WARNING: Unknown format of target dll file.\n");
                 return RET_SUCCESS;
+            }
 
             if (symbol_name == imp.symbol_name)
                 return RET_SUCCESS;
