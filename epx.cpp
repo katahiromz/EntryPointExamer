@@ -111,7 +111,7 @@ char *my_strlwr(char *str)
 inline bool file_exists(const char *pathname)
 {
 #if defined(_WIN32) && !defined(WONVER)
-    return GetFileAttributesA(pathname) == 0xFFFFFFFF;
+    return GetFileAttributesA(pathname) != 0xFFFFFFFF;
 #else
     struct stat st;
     return (stat(pathname, &st) == 0);
