@@ -5,23 +5,34 @@
 
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <windows.h>
+#if defined(WONVER) && WONVER == 0
+    #include "wondef.h"
+    #include "wonnt.h"
+#else
+    #include <windows.h>
+#endif
+
 #include <string>
 #include <set>
 #include <vector>
 #include <cstdlib>
 #include <cstdio>
+#include <sys/types.h>
+#include <sys/stat.h>
+
 #include "ExeImage.hpp"
 using namespace codereverse;
 
 void show_help(void)
 {
     printf("EPX --- EntryPointExamer\n");
-    printf("EPX statically analyzes the entry points of EXE/DLL files.\n");
+    printf("EPX statically analyzes the entry points of Windows EXE/DLL files.\n");
     printf("Usage: epx.exe [OPTIONS] [exe-file.exe]\n");
     printf("\n");
+#if defined(_WIN32) && !defined(WONVER)
     printf("If no EXE file specified, then OS info file will be dumped.\n");
     printf("\n");
+#endif
     printf("Options:\n");
     printf("--os-info \"os.info\"  Set the OS info file for analysis or dumping.\n");
     printf("--version              Show version info.\n");
@@ -50,6 +61,7 @@ struct EPX_EXPORT
 #define NOT_FOUND       "NOT FOUND"
 #define UNKNOWN_FORMAT  "UNKNOWN FORMAT"
 
+const char *g_progname = "epx";
 char g_dll_check_list_file[MAX_PATH] = "DllCheckList.txt";
 typedef std::set<std::string> dll_check_list_t;
 dll_check_list_t g_dll_check_list;
@@ -59,7 +71,7 @@ std::vector<std::string> g_additional_dll_targets;
 enum RET
 {
     RET_SUCCESS = 0,
-    RET_INVALID_ARG,
+    RET_INVALID_ARGUMENT,
     RET_CANNOT_READ,
     RET_CANNOT_WRITE,
     RET_LIST_IS_EMPTY,
@@ -84,6 +96,25 @@ inline void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
     {
         str = str.substr(i, j - i + 1);
     }
+}
+
+char *my_strlwr(char *str)
+{
+    for (char *ptr = str; *ptr; ++ptr)
+    {
+        *ptr = tolower(*ptr);
+    }
+    return str;
+}
+
+inline bool file_exists(const char *pathname)
+{
+#if defined(_WIN32) && !defined(WONVER)
+    return GetFileAttributesA(pathname) == 0xFFFFFFFF;
+#else
+    struct stat st;
+    return (stat(pathname, &st) == 0);
+#endif
 }
 
 RET get_imports(const char *exe_file, std::vector<EPX_IMPORT>& imports)
@@ -193,102 +224,104 @@ RET get_dll_check_list(const char *check_list_file)
     return RET_CANNOT_READ;
 }
 
-RET dump_dll_info(FILE *fp, const char *dll)
-{
-    char path[MAX_PATH], *pch;
-    if (!SearchPathA(NULL, dll, ".dll", MAX_PATH, path, &pch))
+#if defined(_WIN32) && !defined(WONVER)
+    RET dump_dll_info(FILE *fp, const char *dll)
     {
-        if (!SearchPathA(NULL, dll, NULL, MAX_PATH, path, &pch))
+        char path[MAX_PATH], *pch;
+        if (!SearchPathA(NULL, dll, ".dll", MAX_PATH, path, &pch))
         {
-            return RET_DLL_NOT_FOUND;
-        }
-    }
-
-    std::vector<EPX_EXPORT> exports;
-    if (RET ret = get_exports(path, exports))
-        return ret;
-
-    for (size_t k = 0; k < exports.size(); ++k)
-    {
-        EPX_EXPORT& exp = exports[k];
-        if (exp.symbol_name.size())
-        {
-            fprintf(fp, "%s\t%s\n", dll, exp.symbol_name.c_str());
-        }
-        else
-        {
-            fprintf(fp, "%s\t%d\n", dll, exp.symbol_ordinal);
-        }
-    }
-
-    return RET_SUCCESS;
-}
-
-RET dump_os_info(const char *os_info_file)
-{
-    if (g_dll_check_list.empty())
-    {
-        if (RET ret = get_dll_check_list(g_dll_check_list_file))
-            return ret;
-    }
-
-    if (FILE *fp = fopen(os_info_file, "w"))
-    {
-        OSVERSIONINFOA osver;
-        memset(&osver, 0, sizeof(osver));
-        osver.dwOSVersionInfoSize = sizeof(osver);
-        GetVersionExA(&osver);
-
-        fprintf(fp, "; Filename: %s\n", os_info_file);
-        SYSTEMTIME st;
-        GetLocalTime(&st);
-        fprintf(fp, "; Timestamp: %04u.%02u.%02u %02u:%02u:%02u\n",
-            st.wYear, st.wMonth, st.wDay,
-            st.wHour, st.wMinute, st.wSecond);
-#ifdef _WIN64
-        fprintf(fp, "; _WIN64\n");
-#else
-        fprintf(fp, "; _WIN32\n");
-#endif
-        fprintf(fp, "; GetVersion: 0x%08lX\n", GetVersion());
-        fprintf(fp, "; osver.dwMajorVersion: 0x%08lX\n", osver.dwMajorVersion);
-        fprintf(fp, "; osver.dwMinorVersion: 0x%08lX\n", osver.dwMinorVersion);
-        fprintf(fp, "; osver.dwBuildNumber: 0x%08lX\n", osver.dwBuildNumber);
-        fprintf(fp, "; osver.dwPlatformId: 0x%08lX\n", osver.dwPlatformId);
-        fprintf(fp, "; osver.szCSDVersion: %s\n", osver.szCSDVersion);
-
-        dll_check_list_t::iterator it, end = g_dll_check_list.end();
-        for (it = g_dll_check_list.begin(); it != end; ++it)
-        {
-            const std::string& dll = *it;
-            if (RET ret = dump_dll_info(fp, dll.c_str()))
+            if (!SearchPathA(NULL, dll, NULL, MAX_PATH, path, &pch))
             {
-                if (ret == RET_DLL_NOT_FOUND)
-                {
-                    fprintf(fp, "%s\t%s\n", dll.c_str(), NOT_FOUND);
-                }
-                if (ret == RET_UNKNOWN_FORMAT)
-                {
-                    fprintf(fp, "%s\t%s\n", dll.c_str(), UNKNOWN_FORMAT);
-                }
+                return RET_DLL_NOT_FOUND;
             }
         }
 
-        if (ferror(fp))
+        std::vector<EPX_EXPORT> exports;
+        if (RET ret = get_exports(path, exports))
+            return ret;
+
+        for (size_t k = 0; k < exports.size(); ++k)
         {
-            fprintf(stderr, "ERROR: Unable to write file '%s'.\n", os_info_file);
-            fclose(fp);
-            _unlink(os_info_file);
-            return RET_CANNOT_WRITE;
+            EPX_EXPORT& exp = exports[k];
+            if (exp.symbol_name.size())
+            {
+                fprintf(fp, "%s\t%s\n", dll, exp.symbol_name.c_str());
+            }
+            else
+            {
+                fprintf(fp, "%s\t%d\n", dll, exp.symbol_ordinal);
+            }
         }
 
-        fclose(fp);
         return RET_SUCCESS;
     }
 
-    fprintf(stderr, "ERROR: Unable to write file '%s'.\n", os_info_file);
-    return RET_CANNOT_WRITE;
-}
+    RET dump_os_info(const char *os_info_file)
+    {
+        if (g_dll_check_list.empty())
+        {
+            if (RET ret = get_dll_check_list(g_dll_check_list_file))
+                return ret;
+        }
+
+        if (FILE *fp = fopen(os_info_file, "w"))
+        {
+            OSVERSIONINFOA osver;
+            memset(&osver, 0, sizeof(osver));
+            osver.dwOSVersionInfoSize = sizeof(osver);
+            GetVersionExA(&osver);
+
+            fprintf(fp, "; Filename: %s\n", os_info_file);
+            SYSTEMTIME st;
+            GetLocalTime(&st);
+            fprintf(fp, "; Timestamp: %04u.%02u.%02u %02u:%02u:%02u\n",
+                st.wYear, st.wMonth, st.wDay,
+                st.wHour, st.wMinute, st.wSecond);
+    #ifdef _WIN64
+            fprintf(fp, "; _WIN64\n");
+    #else
+            fprintf(fp, "; _WIN32\n");
+    #endif
+            fprintf(fp, "; GetVersion: 0x%08lX\n", GetVersion());
+            fprintf(fp, "; osver.dwMajorVersion: 0x%08lX\n", osver.dwMajorVersion);
+            fprintf(fp, "; osver.dwMinorVersion: 0x%08lX\n", osver.dwMinorVersion);
+            fprintf(fp, "; osver.dwBuildNumber: 0x%08lX\n", osver.dwBuildNumber);
+            fprintf(fp, "; osver.dwPlatformId: 0x%08lX\n", osver.dwPlatformId);
+            fprintf(fp, "; osver.szCSDVersion: %s\n", osver.szCSDVersion);
+
+            dll_check_list_t::iterator it, end = g_dll_check_list.end();
+            for (it = g_dll_check_list.begin(); it != end; ++it)
+            {
+                const std::string& dll = *it;
+                if (RET ret = dump_dll_info(fp, dll.c_str()))
+                {
+                    if (ret == RET_DLL_NOT_FOUND)
+                    {
+                        fprintf(fp, "%s\t%s\n", dll.c_str(), NOT_FOUND);
+                    }
+                    if (ret == RET_UNKNOWN_FORMAT)
+                    {
+                        fprintf(fp, "%s\t%s\n", dll.c_str(), UNKNOWN_FORMAT);
+                    }
+                }
+            }
+
+            if (ferror(fp))
+            {
+                fprintf(stderr, "ERROR: Unable to write file '%s'.\n", os_info_file);
+                fclose(fp);
+                _unlink(os_info_file);
+                return RET_CANNOT_WRITE;
+            }
+
+            fclose(fp);
+            return RET_SUCCESS;
+        }
+
+        fprintf(stderr, "ERROR: Unable to write file '%s'.\n", os_info_file);
+        return RET_CANNOT_WRITE;
+    }
+#endif  // defined(_WIN32) && !defined(WONVER)
 
 RET load_os_info(const char *os_info_file)
 {
@@ -328,7 +361,7 @@ RET check_import_by_os_info(EPX_IMPORT& imp)
     if (g_dll_check_list.find(imp.dll_file) == g_dll_check_list.end())
         return RET_NOT_CHECK_TARGET;
 
-    CharLowerA(&imp.dll_file[0]);
+    my_strlwr(&imp.dll_file[0]);
     if (imp.symbol_name.empty())
     {
         char buf[32];
@@ -339,7 +372,7 @@ RET check_import_by_os_info(EPX_IMPORT& imp)
     for (size_t i = 0; i < g_dll_and_exports.size(); ++i)
     {
         std::string& dll = g_dll_and_exports[i].first;
-        CharLowerA(&dll[0]);
+        my_strlwr(&dll[0]);
         if (dll == imp.dll_file)
         {
             std::string& symbol_name = g_dll_and_exports[i].second;
@@ -450,20 +483,26 @@ int main(int argc, char **argv)
     const char *os_info = "os.info";
     char *exe_file = NULL;
 
+    g_progname = argv[0];
+
     {
         char path[MAX_PATH], *pch;
+#if defined(_WIN32) && !defined(WONVER)
         GetModuleFileNameA(NULL, path, MAX_PATH);
+#else
+        strcpy(path, g_progname);
+#endif
         pch = strrchr(path, '\\');
         if (pch)
         {
             strcpy(pch, "\\DllCheckList.txt");
-            if (GetFileAttributesA(path) == 0xFFFFFFFF)
+            if (!file_exists(path))
             {
                 strcpy(pch, "\\..\\DllCheckList.txt");
-                if (GetFileAttributesA(path) == 0xFFFFFFFF)
+                if (!file_exists(path))
                 {
                     strcpy(pch, "\\..\\..\\DllCheckList.txt");
-                    if (GetFileAttributesA(path) == 0xFFFFFFFF)
+                    if (!file_exists(path))
                     {
                         fprintf(stderr, "ERROR: Not found: DllCheckList.txt\n");
                         return RET_CHECK_LIST_FILE_NOT_FOUND;
@@ -476,7 +515,12 @@ int main(int argc, char **argv)
 
     if (argc <= 1)
     {
+#if defined(_WIN32) && !defined(WONVER)
         return dump_os_info(os_info);
+#else
+        show_help();
+        return 0;
+#endif
     }
 
     for (int i = 1; i < argc; ++i)
@@ -501,14 +545,14 @@ int main(int argc, char **argv)
             else
             {
                 fprintf(stderr, "ERROR: Option '--os-info' needs an operand.\n");
-                return RET_INVALID_ARG;
+                return RET_INVALID_ARGUMENT;
             }
             continue;
         }
         if (argv[i][0] == '-')
         {
             fprintf(stderr, "ERROR: Invalid option '%s'.\n", argv[i]);
-            return RET_INVALID_ARG;
+            return RET_INVALID_ARGUMENT;
         }
         if (exe_file == NULL)
         {
@@ -517,7 +561,7 @@ int main(int argc, char **argv)
         else
         {
             fprintf(stderr, "ERROR: Multiple exe file specified.\n");
-            return RET_INVALID_ARG;
+            return RET_INVALID_ARGUMENT;
         }
     }
 
@@ -526,5 +570,10 @@ int main(int argc, char **argv)
         return analyze_exe(exe_file, os_info);
     }
 
+#if defined(_WIN32) && !defined(WONVER)
     return dump_os_info(os_info);
+#else
+    show_help();
+    return RET_INVALID_ARGUMENT;
+#endif
 }
