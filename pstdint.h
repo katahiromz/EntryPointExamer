@@ -39,8 +39,8 @@
     #endif
     #ifndef INT32_MIN
         #define INT32_MIN (-2147483647 - 1)
-        #define INT16_MAX 2147483647
-        #define UINT16_MAX 0xFFFFFFFF
+        #define INT32_MAX 2147483647
+        #define UINT32_MAX 0xFFFFFFFF
     #endif
     typedef signed char                 int8_t;
     typedef unsigned char               uint8_t;
