@@ -444,7 +444,9 @@ RET analyze_exe(const char *exe, const char *os_info_file)
             {
                 char path[MAX_PATH], *pch;
                 strcpy(path, exe);
-                pch = strrchr(path, '\\');
+                pch = strrchr(path, '/');
+                if (pch == NULL)
+                    pch = strrchr(path, '\\');
                 if (pch)
                 {
                     ++pch;
@@ -485,6 +487,7 @@ int main(int argc, char **argv)
 
     g_progname = argv[0];
 
+    if (!file_exists(g_dll_check_list_file))
     {
         char path[MAX_PATH], *pch;
 #if defined(_WIN32) && !defined(WONVER)
@@ -492,16 +495,18 @@ int main(int argc, char **argv)
 #else
         strcpy(path, g_progname);
 #endif
-        pch = strrchr(path, '\\');
+        pch = strrchr(path, '/');
+        if (pch == NULL)
+            pch = strrchr(path, '\\');
         if (pch)
         {
-            strcpy(pch, "\\DllCheckList.txt");
+            strcpy(pch, "/DllCheckList.txt");
             if (!file_exists(path))
             {
-                strcpy(pch, "\\..\\DllCheckList.txt");
+                strcpy(pch, "/../DllCheckList.txt");
                 if (!file_exists(path))
                 {
-                    strcpy(pch, "\\..\\..\\DllCheckList.txt");
+                    strcpy(pch, "/../../DllCheckList.txt");
                     if (!file_exists(path))
                     {
                         fprintf(stderr, "ERROR: Not found: DllCheckList.txt\n");
