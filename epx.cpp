@@ -41,7 +41,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("EPX 0.2 by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf("EPX 0.3 by katahiromz (%s %s)\n", __DATE__, __TIME__);
     printf("This software is public domain software (PDS).\n");
 }
 
@@ -565,7 +565,7 @@ int main(int argc, char **argv)
         }
         else
         {
-            fprintf(stderr, "ERROR: Multiple exe file specified.\n");
+            fprintf(stderr, "ERROR: Multiple exe files specified.\n");
             return RET_INVALID_ARGUMENT;
         }
     }
