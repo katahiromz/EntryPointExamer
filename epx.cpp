@@ -62,7 +62,7 @@ void show_help(void)
 
 void show_version(void)
 {
-    printf("EPX by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf("EPX 0.0 by katahiromz (%s %s)\n", __DATE__, __TIME__);
     printf("This software is public domain software (PDS).\n");
 }
 
