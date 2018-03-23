@@ -1,0 +1,14 @@
+language:
+  - cpp
+
+os:
+  - linux
+  - osx
+
+compiler:
+  - gcc
+  - clang
+
+script:
+  - cmake .
+  - make
