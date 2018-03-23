@@ -3,7 +3,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_PSTDINT_H_
-#define MZC4_PSTDINT_H_     8   /* Version 8 */
+#define MZC4_PSTDINT_H_     9   /* Version 9 */
 
 #if __cplusplus >= 201103L
     #include <cstdint>
@@ -27,6 +27,21 @@
     #else
         #include <limits.h>
     #endif
+    #ifndef INT8_MIN
+        #define INT8_MIN (-128)
+        #define INT8_MAX 127
+        #define UINT8_MAX 0xFF
+    #endif
+    #ifndef INT16_MIN
+        #define INT16_MIN (-32768)
+        #define INT16_MAX 32767
+        #define UINT16_MAX 0xFFFF
+    #endif
+    #ifndef INT32_MIN
+        #define INT32_MIN (-2147483647 - 1)
+        #define INT16_MAX 2147483647
+        #define UINT16_MAX 0xFFFFFFFF
+    #endif
     typedef signed char                 int8_t;
     typedef unsigned char               uint8_t;
     typedef short                       int16_t;
@@ -37,16 +52,21 @@
     #else
         typedef int                     int32_t;
         typedef unsigned int            uint32_t;
-        #if defined(__LP64__) || defined(_LP64)
-            typedef long                int64_t;
-            typedef unsigned long       uint64_t;
-        #else
-            #ifdef _I64_MAX
-                typedef __int64             int64_t;
-                typedef unsigned __int64    uint64_t;
+        #ifndef INT64_MAX
+            #define INT64_MIN (-9223372036854775807LL - 1)
+            #define INT64_MAX 9223372036854775807LL
+            #define UINT64_MAX 0xFFFFFFFFFFFFFFFFLL
+            #if defined(__LP64__) || defined(_LP64)
+                typedef long                int64_t;
+                typedef unsigned long       uint64_t;
             #else
-                typedef long long           int64_t;
-                typedef unsigned long long  uint64_t;
+                #ifdef _I64_MAX
+                    typedef __int64             int64_t;
+                    typedef unsigned __int64    uint64_t;
+                #else
+                    typedef long long           int64_t;
+                    typedef unsigned long long  uint64_t;
+                #endif
             #endif
         #endif
     #endif
