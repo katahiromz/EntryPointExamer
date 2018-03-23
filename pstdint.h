@@ -3,7 +3,7 @@
 /****************************************************************************/
 
 #ifndef MZC4_PSTDINT_H_
-#define MZC4_PSTDINT_H_     14   /* Version 14 */
+#define MZC4_PSTDINT_H_     15   /* Version 15 */
 
 #if __cplusplus >= 201103L
     #include <cstdint>
@@ -57,12 +57,12 @@
         #ifndef INT64_MAX
             #ifdef _I64_MAX
                 #define INT64_MIN _I64_MIN
-                #define INT64_MAX
-                #define UINT64_MAX
+                #define INT64_MAX _I64_MAX
+                #define UINT64_MAX _UI64_MAX
                 typedef __int64             int64_t;
                 typedef unsigned __int64    uint64_t;
             #else
-                #if __LONG_MAX__ == 9223372036854775807L || defined(__APPLE__)
+                #ifdef __LP64__
                     #define INT64_MIN (-9223372036854775807L - 1)
                     #define INT64_MAX 9223372036854775807L
                     #define UINT64_MAX 0xFFFFFFFFFFFFFFFFL
