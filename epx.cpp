@@ -23,6 +23,12 @@
 #include "ExeImage.hpp"
 using namespace codereverse;
 
+void show_version(void)
+{
+    printf("EPX 0.4 by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf("This software is public domain software (PDS).\n");
+}
+
 void show_help(void)
 {
     printf("EPX --- EntryPointExamer\n");
@@ -37,12 +43,6 @@ void show_help(void)
     printf("--os-info \"os.info\"  Set the OS info file for analysis or dumping.\n");
     printf("--version              Show version info.\n");
     printf("--help                 Show this message.\n");
-}
-
-void show_version(void)
-{
-    printf("EPX 0.3 by katahiromz (%s %s)\n", __DATE__, __TIME__);
-    printf("This software is public domain software (PDS).\n");
 }
 
 struct EPX_IMPORT
@@ -79,7 +79,8 @@ enum RET
     RET_DLL_NOT_FOUND,
     RET_SYMBOL_NOT_FOUND,
     RET_NOT_CHECK_TARGET,
-    RET_CHECK_LIST_FILE_NOT_FOUND
+    RET_CHECK_LIST_FILE_NOT_FOUND,
+    RET_UNKNOWN_DLL
 };
 
 template <typename T_CHAR>
