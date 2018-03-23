@@ -25,7 +25,7 @@ using namespace codereverse;
 
 void show_version(void)
 {
-    printf("EPX 0.7 by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf("EPX 0.8 by katahiromz (%s %s)\n", __DATE__, __TIME__);
     printf("This software is public domain software (PDS).\n");
 }
 
@@ -367,10 +367,10 @@ RET load_os_info(const char *os_info_file)
 
 RET check_import_by_os_info(EPX_IMPORT& imp)
 {
+    my_strlwr(&imp.dll_file[0]);
     if (g_dll_check_list.find(imp.dll_file) == g_dll_check_list.end())
         return RET_NOT_CHECK_TARGET;
 
-    my_strlwr(&imp.dll_file[0]);
     if (imp.symbol_name.empty())
     {
         char buf[32];
