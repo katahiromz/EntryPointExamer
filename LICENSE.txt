@@ -1,0 +1,2 @@
+Copyright (C) 2018 Katayama Hirofumi MZ.
+This software is public domain software (PDS).
