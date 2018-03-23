@@ -25,7 +25,7 @@ using namespace codereverse;
 
 void show_version(void)
 {
-    printf("EPX 0.6 by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf("EPX 0.7 by katahiromz (%s %s)\n", __DATE__, __TIME__);
     printf("This software is public domain software (PDS).\n");
 }
 
@@ -35,7 +35,7 @@ void show_help(void)
     printf("EPX statically analyzes the entry points of Windows EXE/DLL files.\n");
     printf("Usage: epx.exe [OPTIONS] [exe-file.exe]\n");
     printf("\n");
-#if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
     printf("If no EXE file specified, then OS info file will be dumped.\n");
     printf("\n");
 #endif
@@ -111,7 +111,7 @@ char *my_strlwr(char *str)
 
 inline bool file_exists(const char *pathname)
 {
-#if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
     return GetFileAttributesA(pathname) != 0xFFFFFFFF;
 #else
     struct stat st;
@@ -226,7 +226,7 @@ RET get_dll_check_list(const char *check_list_file)
     return RET_CANNOT_READ;
 }
 
-#if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
     RET dump_dll_info(FILE *fp, const char *dll)
     {
         char path[MAX_PATH], *pch;
@@ -330,7 +330,7 @@ RET get_dll_check_list(const char *check_list_file)
         fprintf(stderr, "ERROR: Unable to write file '%s'.\n", os_info_file);
         return RET_CANNOT_WRITE;
     }
-#endif  // !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+#endif  // defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
 
 RET load_os_info(const char *os_info_file)
 {
@@ -516,7 +516,7 @@ int main(int argc, char **argv)
     if (!file_exists(g_dll_check_list_file))
     {
         char path[MAX_PATH], *pch;
-#if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
         GetModuleFileNameA(NULL, path, MAX_PATH);
 #else
         strcpy(path, g_progname);
@@ -546,7 +546,7 @@ int main(int argc, char **argv)
 
     if (argc <= 1)
     {
-#if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
         return dump_os_info(os_info);
 #else
         show_help();
@@ -601,7 +601,7 @@ int main(int argc, char **argv)
         return analyze_exe(exe_file, os_info);
     }
 
-#if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
     return dump_os_info(os_info);
 #else
     show_help();

@@ -225,8 +225,8 @@ inline bool ExeImage::load(const char *filename)
     unload();
 
     using namespace std;
-    struct _stat st;
-    if (_stat(filename, &st) != 0)
+    struct stat st;
+    if (stat(filename, &st) != 0)
         return false;
 
     bool ok = false;
