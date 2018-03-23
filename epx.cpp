@@ -31,6 +31,7 @@ char g_dll_check_list_file[MAX_PATH] = "DllCheckList.txt";
 typedef std::set<std::string> dll_check_list_t;
 dll_check_list_t g_dll_check_list;
 std::vector<std::pair<std::string, std::string> > g_dll_and_exports;
+std::vector<std::string> g_additional_dll_targets;
 
 enum RET
 {
@@ -409,6 +410,7 @@ RET analyze_exe(const char *exe, const char *os_info_file)
                 {
                     ++pch;
                     strcpy(pch, imp.dll_file.c_str());
+                    g_additional_dll_targets.push_back(path);
                     ret2 = check_dll_for_import(path, imp);
                 }
             }
@@ -418,6 +420,14 @@ RET analyze_exe(const char *exe, const char *os_info_file)
                         imp.dll_file.c_str(), imp.symbol_name.c_str());
                 ret = ret2;
             }
+        }
+    }
+
+    for (size_t i = 0; i < g_additional_dll_targets.size(); ++i)
+    {
+        if (RET ret2 = analyze_exe(g_additional_dll_targets[i].c_str(), os_info_file))
+        {
+            ret = ret2;
         }
     }
 
