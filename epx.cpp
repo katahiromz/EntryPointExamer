@@ -23,9 +23,17 @@
 #include "ExeImage.hpp"
 using namespace codereverse;
 
+#ifdef _WIN64
+    #define EPX_VERSION "EPX 1.0 by katahiromz (_WIN64)"
+#elif defined(_WIN32)
+    #define EPX_VERSION "EPX 1.0 by katahiromz (_WIN32)"
+#else
+    #define EPX_VERSION "EPX 1.0 by katahiromz (Non-Windows)"
+#endif
+
 void show_version(void)
 {
-    printf("EPX 0.8 by katahiromz (%s %s)\n", __DATE__, __TIME__);
+    printf(EPX_VERSION " (%s %s)\n", __DATE__, __TIME__);
     printf("This software is public domain software (PDS).\n");
 }
 
@@ -280,17 +288,13 @@ RET get_dll_check_list(const char *check_list_file)
             osver.dwOSVersionInfoSize = sizeof(osver);
             GetVersionExA(&osver);
 
+            fprintf(fp, "; " EPX_VERSION "\n");
             fprintf(fp, "; Filename: %s\n", os_info_file);
             SYSTEMTIME st;
             GetLocalTime(&st);
             fprintf(fp, "; Timestamp: %04u.%02u.%02u %02u:%02u:%02u\n",
                 st.wYear, st.wMonth, st.wDay,
                 st.wHour, st.wMinute, st.wSecond);
-    #ifdef _WIN64
-            fprintf(fp, "; _WIN64\n");
-    #else
-            fprintf(fp, "; _WIN32\n");
-    #endif
             fprintf(fp, "; GetVersion: 0x%08lX\n", GetVersion());
             fprintf(fp, "; osver.dwMajorVersion: 0x%08lX\n", osver.dwMajorVersion);
             fprintf(fp, "; osver.dwMinorVersion: 0x%08lX\n", osver.dwMinorVersion);
@@ -477,7 +481,8 @@ RET analyze_exe(const char *exe, const char *os_info_file)
             {
                 fprintf(stderr, "WARNING: '%s' is not check target.\n",
                         imp.dll_file.c_str());
-                ret = ret2;
+                if (ret != RET_SYMBOL_NOT_FOUND)
+                    ret = ret2;
             }
         }
     }
