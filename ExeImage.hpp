@@ -4,21 +4,40 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXE_IMAGE_HPP
-#define EXE_IMAGE_HPP   21      // Version 21
+#define EXE_IMAGE_HPP   23      // Version 23
 
 #ifndef _CRT_SECURE_NO_WARNINGS
     #define _CRT_SECURE_NO_WARNINGS
 #endif
+
 #if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
     #include "wonnt.h"          // Wonders API
-    #include "pdelayload.h"     // for ImgDelayDescr
 #else
     #include <windows.h>        // Windows API
+#endif
+
+#if defined(__WATCOMC__)
+    #include "pdelayload.h"     // for ImgDelayDescr
+#elif !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
+    #include "pdelayload.h"     // for ImgDelayDescr
+#else
     #include <delayimp.h>       // for ImgDelayDescr
 #endif
 
 #include <vector>               // for std::vector
 #include <sstream>              // for std::stringstream
+
+#if defined(__WATCOMC__)
+    #include <strstrea>
+    #define stringstream strstream
+    #define OriginalFirstThunk OrdinalFirstThunk
+    #define IMAGE_ORDINAL_FLAG32 0x80000000
+    #define IMAGE_ORDINAL_FLAG64 0x8000000000000000
+    #define IMAGE_ORDINAL32(Ordinal) (Ordinal & 0xffff)
+    #define IMAGE_ORDINAL64(Ordinal) (Ordinal & 0xffff)
+    #define IMAGE_SNAP_BY_ORDINAL32(Ordinal) ((Ordinal & IMAGE_ORDINAL_FLAG32) != 0)
+    #define IMAGE_SNAP_BY_ORDINAL64(Ordinal) ((Ordinal & IMAGE_ORDINAL_FLAG64) != 0)
+#endif
 
 #include <cstdio>               // for fopen, fclose, FILE, ...
 #include <cstring>              // for memcpy

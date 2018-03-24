@@ -4,6 +4,7 @@
 // This file is public domain software (PDS).
 
 #define _CRT_SECURE_NO_WARNINGS
+#define NOMINMAX
 
 #if !defined(_WIN32) || (defined(WONVER) && WONVER == 0)
     #include "wondef.h"
@@ -21,6 +22,7 @@
 #include <sys/stat.h>
 
 #include "ExeImage.hpp"
+using namespace std;
 using namespace codereverse;
 
 #ifdef _WIN64
@@ -92,10 +94,9 @@ enum RET
     RET_NO_EXPORTS
 };
 
-template <typename T_CHAR>
-inline void mstr_trim(std::basic_string<T_CHAR>& str, const T_CHAR *spaces)
+inline void mstr_trim(std::basic_string<char>& str, const char *spaces)
 {
-    typedef std::basic_string<T_CHAR> string_type;
+    typedef std::basic_string<char> string_type;
     size_t i = str.find_first_not_of(spaces);
     size_t j = str.find_last_not_of(spaces);
     if ((i == string_type::npos) || (j == string_type::npos))
