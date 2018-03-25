@@ -3,7 +3,25 @@
 
 # epx --- EntryPointExamer by katahiromz
 
-This software examinates whether the specified Windows program can start up correctly on the specified OS by checking the entry point functions.
+This software examinates whether the specified Windows program can start up correctly on a specific OS by checking the entry points.
+
+## USAGE
+
+### (1)
+
+```txt
+epx --os-info win98se.info myfile.exe
+```
+
+It examinates the file "myfile.exe" can start up on Windows 98 SE.
+
+### (2)
+
+```txt
+epx --os-info mywinos.info
+```
+
+It dumps the current OS info to the file "mywinos.info".
 
 ---
 katayama.hirofumi.mz@gmail.com
