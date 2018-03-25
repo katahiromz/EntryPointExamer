@@ -52,6 +52,8 @@ if (WIN32)
         foreach(CompilerFlags ${CompilerFlags})
             string(REPLACE "/MD" "/MT" ${CompilerFlags} "${${CompilerFlags}}")
         endforeach()
+    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Watcom")
+        add_definitios(-bw)
     endif()
 endif()
 
