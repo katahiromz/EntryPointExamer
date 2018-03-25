@@ -13,7 +13,7 @@ This software examinates whether the specified Windows program can start up corr
 epx --os-info win98se.info myfile.exe
 ```
 
-It examinates the file "myfile.exe" can start up on Windows 98 SE.
+It examinates whether the file "myfile.exe" can start up on Windows 98 SE.
 
 ### (2)
 
