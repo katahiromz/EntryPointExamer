@@ -1,34 +1,40 @@
-version: '{build}'
-
-branches:
-  only:
-    - master
-
+image: Visual Studio 2017
+platform: 
+  x64
+skip_commits:
+  files:
+    - '*.md'
+    - '.gitignore'
+matrix:
+  fast_finish: true
 environment:
   matrix:
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - PLATFORM: x86
+      BUILDER: CMake
       GENERATOR: "Visual Studio 15 2017"
-  
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - PLATFORM: x64
+      BUILDER: CMake
+      GENERATOR: "Visual Studio 15 2017 Win64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    - PLATFORM: x86
+      BUILDER: CMake
       GENERATOR: "Visual Studio 14 2015"
-
-    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-      GENERATOR: "Visual Studio 12 2013"
-
-platform:
-  - Win32
-  - x64
-
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+    - PLATFORM: x64
+      BUILDER: CMake
+      GENERATOR: "Visual Studio 14 2015 Win64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 configuration:
   - Debug
   - Release
 
 before_build:
-  - cmake --version
-  - cmake -G "%GENERATOR%" -A "%PLATFORM%" .
+  - set CTEST_OUTPUT_ON_FAILURE=1
+  - cmake.exe -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%CONFIGURATION% %APPVEYOR_BUILD_FOLDER%
 
-build:
-  project: epx.sln
+build_script:
+  - cmake --build . --config %CONFIGURATION%
 
-matrix:
-  fast_finish: true
+test_script:
+  - ctest --output-on-failure -C %CONFIGURATION%

@@ -8,6 +8,9 @@
 # CMake minimum version
 cmake_minimum_required(VERSION 2.4)
 
+# enable testing
+enable_testing()
+
 # use new policy
 cmake_policy(SET CMP0054 NEW)
 
@@ -38,7 +41,7 @@ if (WIN32)
         # using GCC
         set(CMAKE_C_FLAGS "-static -static-libgcc -static-libstdc++")
         set(CMAKE_CXX_FLAGS "-static -static-libgcc -static-libstdc++")
-    elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    elseif (MSVC)
         # replace "/MD" with "/MT" (building without runtime DLLs)
         set(CompilerFlags
             CMAKE_C_FLAGS
@@ -57,9 +60,11 @@ if (WIN32)
     endif()
 endif()
 
+# epx.exe
 add_executable(epx epx.cpp)
-set_target_properties(epx PROPERTIES LINK_SEARCH_START_STATIC 1)
-set_target_properties(epx PROPERTIES LINK_SEARCH_END_STATIC 1)
+
+# tests
+add_test(NAME self_check COMMAND $<TARGET_FILE:epx> $<TARGET_FILE:epx> --os-info "${CMAKE_SOURCE_DIR}/winxp.info")
 
 # install the program
 install(TARGETS epx DESTINATION bin)

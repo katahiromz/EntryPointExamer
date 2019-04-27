@@ -1,14 +1,23 @@
-language:
-  - cpp
-
-os:
-  - linux
-  - osx
-
+build: Script
+language: cpp
 compiler:
-  - gcc
-  - clang
-
+    - clang++
+    - g++
+os:
+    - osx
+    - linux
+addons:
+    apt:
+        packages:
+            - cmake
+matrix:
+    fast_finish: true
+before_script:
+    - cmake --version
+    - $CXX --version
 script:
-  - cmake .
-  - make
+    - mkdir -p build
+    - cd build
+    - env CTEST_OUTPUT_ON_FAILURE=1 cmake ..
+    - make -j 2
+    - ctest --output-on-failure

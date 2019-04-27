@@ -1,6 +1,6 @@
 // epx --- EntryPointExamer
 // This program statically analyzes the entry points of an EXE/DLL file.
-// Copyright (C) 2018 Katayama Hirofumi MZ.
+// Copyright (C) 2018-2019 Katayama Hirofumi MZ.
 // This file is public domain software (PDS).
 
 #define _CRT_SECURE_NO_WARNINGS
@@ -26,11 +26,11 @@ using namespace std;
 using namespace codereverse;
 
 #ifdef _WIN64
-    #define EPX_VERSION "EPX 1.0 by katahiromz (_WIN64)"
+    #define EPX_VERSION "EPX 1.1 by katahiromz (_WIN64)"
 #elif defined(_WIN32)
-    #define EPX_VERSION "EPX 1.0 by katahiromz (_WIN32)"
+    #define EPX_VERSION "EPX 1.1 by katahiromz (_WIN32)"
 #else
-    #define EPX_VERSION "EPX 1.0 by katahiromz (Non-Windows)"
+    #define EPX_VERSION "EPX 1.1 by katahiromz (Non-Windows)"
 #endif
 
 void show_version(void)
@@ -50,7 +50,8 @@ void show_help(void)
     printf("\n");
 #endif
     printf("Options:\n");
-    printf("--os-info \"os.info\"  Set the OS info file for analysis or dumping.\n");
+    printf("--generate             Generate the OS info file.\n");
+    printf("--os-info \"os.info\"  Set the OS info filename for analysis or generation.\n");
     printf("--version              Show version info.\n");
     printf("--help                 Show this message.\n");
 }
@@ -514,7 +515,7 @@ RET analyze_exe(const char *exe, const char *os_info_file)
 
 int main(int argc, char **argv)
 {
-    const char *os_info = "os.info";
+    const char *os_info = NULL;
     char *exe_file = NULL;
 
     g_progname = argv[0];
@@ -552,14 +553,11 @@ int main(int argc, char **argv)
 
     if (argc <= 1)
     {
-#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
-        return dump_os_info(os_info);
-#else
         show_help();
         return 0;
-#endif
     }
 
+    bool do_generate = false;
     for (int i = 1; i < argc; ++i)
     {
         if (strcmp(argv[i], "--help") == 0)
@@ -571,6 +569,10 @@ int main(int argc, char **argv)
         {
             show_version();
             return RET_SUCCESS;
+        }
+        if (strcmp(argv[i], "--generate") == 0)
+        {
+            do_generate = true;
         }
         if (strcmp(argv[i], "--os-info") == 0)
         {
@@ -604,13 +606,30 @@ int main(int argc, char **argv)
 
     if (exe_file)
     {
+        if (!os_info)
+        {
+            fprintf(stderr, "ERROR: Please specify --os-info XXX.\n");
+            return RET_INVALID_ARGUMENT;
+        }
         return analyze_exe(exe_file, os_info);
     }
 
 #if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
-    return dump_os_info(os_info);
-#else
+    if (do_generate)
+    {
+        if (!os_info)
+        {
+            fprintf(stderr, "ERROR: Please specify --os-info XXX.\n");
+            return RET_INVALID_ARGUMENT;
+        }
+        return dump_os_info(os_info);
+    }
+    else if (os_info)
+    {
+        fprintf(stderr, "ERROR: Please specify --generate to generate OS info.\n");
+        return RET_INVALID_ARGUMENT;
+    }
+#endif
     show_help();
     return RET_INVALID_ARGUMENT;
-#endif
 }
