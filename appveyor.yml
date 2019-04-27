@@ -5,6 +5,7 @@ skip_commits:
   files:
     - '*.md'
     - '.gitignore'
+    - 'README*.txt'
 matrix:
   fast_finish: true
 environment:
