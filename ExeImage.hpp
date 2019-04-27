@@ -4,7 +4,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #ifndef EXE_IMAGE_HPP
-#define EXE_IMAGE_HPP   23      // Version 23
+#define EXE_IMAGE_HPP   24      // Version 24
 
 #ifndef _CRT_SECURE_NO_WARNINGS
     #define _CRT_SECURE_NO_WARNINGS
@@ -1099,7 +1099,7 @@ inline void ExeImage::dump_import(std::stringstream& ss) const
     {
         ss << names[i] << ": \n";
         std::vector<ImportSymbol> symbols;
-        if (get_import_symbols(i, symbols))
+        if (get_import_symbols(DWORD(i), symbols))
         {
             for (size_t k = 0; k < symbols.size(); ++k)
             {

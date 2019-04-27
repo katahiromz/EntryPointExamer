@@ -64,7 +64,7 @@ endif()
 add_executable(epx epx.cpp)
 
 # tests
-add_test(NAME self_check COMMAND $<TARGET_FILE:epx> $<TARGET_FILE:epx> --os-info "${CMAKE_SOURCE_DIR}/winxp.info")
+#add_test(NAME self_check COMMAND $<TARGET_FILE:epx> $<TARGET_FILE:epx> --os-info "${CMAKE_SOURCE_DIR}/winxp.info")
 
 # install the program
 install(TARGETS epx DESTINATION bin)
