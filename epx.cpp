@@ -51,7 +51,7 @@ void show_help(void)
 #endif
     printf("Options:\n");
     printf("--generate             Generate the OS info file.\n");
-    printf("--os-info \"os.info\"  Set the OS info filename for analysis or generation.\n");
+    printf("--os-info \"os.info\"    Set the OS info filename for analysis or generation.\n");
     printf("--version              Show version info.\n");
     printf("--help                 Show this message.\n");
 }
