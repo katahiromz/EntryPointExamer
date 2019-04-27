@@ -18,7 +18,7 @@ It examinates whether the file "myfile.exe" can start up on Windows 98 SE.
 ### (2)
 
 ```txt
-epx --os-info mywinos.info
+epx --os-info mywinos.info --generate
 ```
 
 It dumps the current OS info to the file "mywinos.info".
