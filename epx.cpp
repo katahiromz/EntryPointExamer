@@ -26,11 +26,11 @@ using namespace std;
 using namespace codereverse;
 
 #ifdef _WIN64
-    #define EPX_VERSION "EPX 1.1 by katahiromz (_WIN64)"
+    #define EPX_VERSION "EPX 1.2 by katahiromz (_WIN64)"
 #elif defined(_WIN32)
-    #define EPX_VERSION "EPX 1.1 by katahiromz (_WIN32)"
+    #define EPX_VERSION "EPX 1.2 by katahiromz (_WIN32)"
 #else
-    #define EPX_VERSION "EPX 1.1 by katahiromz (Non-Windows)"
+    #define EPX_VERSION "EPX 1.2 by katahiromz (Non-Windows)"
 #endif
 
 void show_version(void)
@@ -45,12 +45,10 @@ void show_help(void)
     printf("EPX statically analyzes the entry points of Windows EXE/DLL files.\n");
     printf("Usage: epx.exe [OPTIONS] [exe-file.exe]\n");
     printf("\n");
-#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
-    printf("If no EXE file specified, then OS info file will be dumped.\n");
-    printf("\n");
-#endif
     printf("Options:\n");
+#if defined(_WIN32) && (!defined(WONVER) || WONVER != 0)
     printf("--generate             Generate the OS info file.\n");
+#endif
     printf("--os-info \"os.info\"    Set the OS info filename for analysis or generation.\n");
     printf("--version              Show version info.\n");
     printf("--help                 Show this message.\n");
